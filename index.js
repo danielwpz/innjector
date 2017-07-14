@@ -5,13 +5,16 @@ const path = require('path');
 const _ = require('lodash');
 const logger = require('winston');
 
-logger.level = 'debug';
 
 const defaultOption = {
-  strict: false
+  strict: false,
+  verbose: false
 };
 
 function Innjector(path, opt, cb) {
+  if (opt && opt.verbose) {
+    logger.level = 'debug';
+  }
   this.container = dependable.container();
   this.load.apply(this, arguments);
 }
