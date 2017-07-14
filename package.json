@@ -1,0 +1,25 @@
+{
+  "name": "innjector",
+  "version": "0.0.1",
+  "description": "Another dependency injection library for JS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/danielwpz/innjector.git"
+  },
+  "author": "Daniel Wang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielwpz/innjector/issues"
+  },
+  "homepage": "https://github.com/danielwpz/innjector#readme",
+  "dependencies": {
+    "dependable": "^0.2.5",
+    "filewalker": "^0.1.3",
+    "lodash": "^4.17.4",
+    "winston": "^2.3.1"
+  }
+}
