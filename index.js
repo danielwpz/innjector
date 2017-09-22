@@ -3,8 +3,8 @@ const dependable = require('dependable');
 const filewalker = require('filewalker');
 const path = require('path');
 const _ = require('lodash');
-const logger = require('winston');
-
+const winston = require('winston');
+const logger = new winston.Logger();
 
 const defaultOption = {
   strict: false,
