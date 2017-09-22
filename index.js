@@ -14,8 +14,6 @@ const defaultOption = {
 function Innjector(path, opt, cb) {
   if (opt && opt.verbose) {
     logger.level = 'debug';
-  } else {
-    logger.level = 'info';
   }
   this.container = dependable.container();
   this.load.apply(this, arguments);
