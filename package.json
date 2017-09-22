@@ -1,6 +1,6 @@
 {
   "name": "innjector",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Another dependency injection library for JS.",
   "main": "index.js",
   "scripts": {
