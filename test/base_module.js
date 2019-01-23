@@ -1,14 +1,10 @@
-'use strict';
-
-function baseModule(dbModule) {
-  const name = dbModule.read('name');
-  console.log('Base module log', name);
-
+function baseModule(subModule) {
   return {
-    doSomeThing: function (task) {
-      console.log('Doing task', task);
+    run: function() {
+      console.log('base module running...');
+      return subModule.subRun();
     }
-  }
+  };
 }
 
 module.exports = baseModule;

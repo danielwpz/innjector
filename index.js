@@ -1,72 +1,54 @@
-'use strict';
 const dependable = require('dependable');
 const filewalker = require('filewalker');
-const path = require('path');
+const nodePath = require('path');
 const _ = require('lodash');
-const winston = require('winston');
-const logger = new winston.Logger();
+const debug = require('debug')('innjector');
 
-const defaultOption = {
-  strict: false,
-  verbose: false
-};
 
-function Innjector(path, opt, cb) {
-  if (opt && opt.verbose) {
-    logger.level = 'debug';
+class Innjector {
+  constructor() {
+    this.container = dependable.container();
   }
-  this.container = dependable.container();
-  this.load.apply(this, arguments);
+
+  async load(path) {
+    await loadFromPath(path, this.container);
+    return this;
+  }
 }
 
-Innjector.prototype.load = function (path, opt, cb) {
-  if (!cb) {
-    cb = opt;
-    opt = {};
-  }
-  opt = _.defaults(opt, defaultOption);
-
-  loadFromPath(path, this.container, opt, cb);
-  return this;
-};
-
-function loadFromPath(basePath, container, opt, cb) {
-  filewalker(basePath)
-    .on('file', (p, s, a) => {
-      if (path.extname(p) === '.js') {
-        try {
-          const mod = require(a);
-
-          if (!opt.strict || (mod && mod._innModule)) {
-            doRegistration(container, p, mod);
+function loadFromPath(path, container) {
+  return new Promise((resolve, reject) => {
+    filewalker(path)
+      .on('file', (p, s, a) => {
+        if (nodePath.extname(p) === '.js') {
+          try {
+            const mod = require(a);
+            if (mod) {
+              const moduleName = getModuleName(p, mod);
+              container.register(moduleName, mod);
+              debug('registered %s', moduleName);
+            }
+          } catch (err) {
+            debug(err);
           }
-        } catch (e) {
-          logger.debug(e);
         }
-      }
-    })
-    .on('error', err => {
-      logger.error(err);
-      if (cb) cb(err);
-    })
-    .on('done', () => {
-      logger.debug('Innjector init finished', basePath);
-      if (cb) cb(undefined, container);
-    })
-    .walk();
+      })
+      .on('error', err => {
+        reject(err);
+      })
+      .on('done', () => {
+        debug('done');
+        resolve(container);
+      })
+      .walk();
+  });
 }
 
-function doRegistration(container, p, mod) {
-  const name = getModuleName(p, mod);
-  container.register(name, mod._innModule ? mod._innModule : mod);
-  logger.debug('Registered', name, p);
-}
-
-function getModuleName(p, m) {
-  if (m._innModuleName) {
-    return m._innModuleName;
+function getModuleName(path, mod) {
+  if (mod._moduleName) {
+    return mod._moduleName;
   } else {
-    const filename = path.basename(p, path.extname(p));
+    const filename = nodePath.basename(path, nodePath.extname(path));
     return _.camelCase(filename);
   }
 }
