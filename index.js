@@ -20,6 +20,11 @@ function loadFromPath(path, container) {
   return new Promise((resolve, reject) => {
     filewalker(path)
       .on('file', (p, s, a) => {
+        // skip node_modules
+        if (p.includes('node_modules')) {
+          return;
+        }
+
         if (nodePath.extname(p) === '.js') {
           try {
             const mod = require(a);
