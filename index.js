@@ -35,6 +35,7 @@ function loadFromPath(path, container) {
             }
           } catch (err) {
             debug(err);
+			reject(err);
           }
         }
       })
